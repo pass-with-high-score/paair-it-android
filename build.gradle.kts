@@ -7,3 +7,15 @@ plugins {
     alias(libs.plugins.kotlin.ksp) apply false
     alias(libs.plugins.google.services) apply false
 }
+
+tasks.register("buildRelease") {
+    group = "distribution"
+    description = "Build the app for distribution (release version)"
+    dependsOn(":app:assembleRelease")
+}
+
+tasks.register("buildDebug") {
+    group = "build"
+    description = "Builds the debug version of the app"
+    dependsOn(":app:assembleDebug")
+}
