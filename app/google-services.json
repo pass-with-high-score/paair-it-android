@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "352728604293",
+    "project_id": "paair-it",
+    "storage_bucket": "paair-it.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:352728604293:android:f2b0a3ded226ea2c3313ec",
+        "android_client_info": {
+          "package_name": "app.pwhs.paair_it"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQeDR0_7ZE7JZVCQ2As8L82QUbio9cNYQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
