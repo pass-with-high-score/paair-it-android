@@ -1,26 +1,61 @@
-name: Android CI
+name: Android Build and Test
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
+      - "feat/*"
+      - "fix/*"
   pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
+      - "feat/*"
+      - "fix/*"
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: set up JDK 11
-      uses: actions/setup-java@v4
-      with:
-        java-version: '11'
-        distribution: 'temurin'
-        cache: gradle
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
-    - name: Build with Gradle
-      run: ./gradlew build
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Cache Gradle files
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+
+      - name: Create local.properties file
+        env:
+          BASE_URL: ${{ secrets.BASE_URL }}
+
+        run: |
+          echo "BASE_URL=$BASE_URL" >> $GITHUB_WORKSPACE/local.properties
+
+      - name: Build Debug APK
+        run: ./gradlew buildDebug
+
+      - name: Send Telegram Notification on Success
+        if: success()
+        run: |
+          curl -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
+            -d chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" \
+            -d text="🎉 <b>Release Build and Deploy Successful!</b> 🎉%0A<b>Project</b>: 🚀 <a href='https://github.com/${{ github.repository }}'>${{ github.repository }}</a>%0A<b>Committer</b>: 👤 ${{ github.actor }}%0A<b>Message</b>: 💬 ${{ github.event.head_commit.message }}%0A<b>Branch</b>: 🌿 <code>${{ github.ref_name }}</code>%0A<b>Workflow</b>: 📄 <a href='https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'>Details</a>" \
+            -d parse_mode="HTML"
+
+      - name: Send Telegram Notification on Failure
+        if: failure()
+        run: |
+          curl -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
+            -d chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" \
+            -d text="⚠️ <b>Release Build Failed!</b> ⚠️%0A<b>Project</b>: 🚀 <a href='https://github.com/${{ github.repository }}'>${{ github.repository }}</a>%0A<b>Committer</b>: 👤 ${{ github.actor }}%0A<b>Message</b>: 💬 ${{ github.event.head_commit.message }}%0A<b>Branch</b>: 🌿 <code>${{ github.ref_name }}</code>%0A<b>Workflow</b>: 📄 <a href='https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'>Details</a>%0A<b>Error Details</b>: ❌ Check logs for more information." \
+            -d parse_mode="HTML"
