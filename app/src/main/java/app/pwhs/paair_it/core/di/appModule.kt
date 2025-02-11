@@ -4,6 +4,7 @@ import app.pwhs.paair_it.core.datastore.TokenManager
 import app.pwhs.paair_it.core.networking.HttpClientFactory
 import app.pwhs.paair_it.data.remote.repository.AuthRepositoryImpl
 import app.pwhs.paair_it.domain.repository.AuthRepository
+import app.pwhs.paair_it.presentation.auth.AuthViewModel
 import app.pwhs.paair_it.presentation.home.HomeViewModel
 import app.pwhs.paair_it.presentation.onboarding.OnboardingViewModel
 import io.ktor.client.engine.cio.CIO
@@ -18,5 +19,6 @@ val appModule = module {
     singleOf(::AuthRepositoryImpl).bind<AuthRepository>()
     single { HttpClientFactory.create(CIO.create(), get()) }
     viewModelOf(::HomeViewModel)
+    viewModel { AuthViewModel(get()) }
     viewModel { OnboardingViewModel(get()) }
 }

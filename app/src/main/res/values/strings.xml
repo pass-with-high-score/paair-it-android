@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Paair It</string>
+    <string name="terms_and_privacy_notice">By signing in, you agree to our <u>Terms of Service</u> and <u>Privacy Policy</u></string>
 </resources>

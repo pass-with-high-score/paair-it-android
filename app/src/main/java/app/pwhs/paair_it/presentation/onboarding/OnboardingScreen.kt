@@ -15,7 +15,7 @@ import app.pwhs.paair_it.ui.theme.PaairItTheme
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.NavGraphs
-import com.ramcosta.composedestinations.generated.destinations.HomeScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.AuthScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import org.koin.androidx.compose.koinViewModel
 
@@ -29,7 +29,7 @@ fun OnboardingScreen(
     ObserveAsEvents(viewModel.uiEvent) { event ->
         when (event) {
             OnboardingEvent.OnboardingCompleted -> {
-                navigator.navigate(HomeScreenDestination()) {
+                navigator.navigate(AuthScreenDestination()) {
                     popUpTo(NavGraphs.root) {
                         saveState = false
                     }

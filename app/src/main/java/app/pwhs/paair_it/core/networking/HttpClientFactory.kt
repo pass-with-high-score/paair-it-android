@@ -24,7 +24,6 @@ import io.ktor.http.parameters
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.flow.first
 import kotlinx.serialization.json.Json
-import timber.log.Timber
 
 object HttpClientFactory {
 
